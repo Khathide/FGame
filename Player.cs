@@ -14,6 +14,12 @@ public class Player : MonoBehaviour
     //Can still access from inspector
     [SerializeField]
     private GameObject _laserPrefab;
+    private float _fireRate = 0.15f;
+    private float _canFire = -1f;
+    
+    [SerializeField]
+    private int _lives = 5;
+
     
 
 
@@ -28,13 +34,11 @@ public class Player : MonoBehaviour
     void Update()
     {
         PlayerMovement();
-
-        //space key must spawn Laser
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0),Quaternion.identity);
-            Debug.Log("Space Key Pressed");
+            FireLaser();
         }
+        
     }
     
     //Void runs all the code underneath from beginning to end
@@ -70,5 +74,31 @@ public class Player : MonoBehaviour
          transform.position.z);
      }
     }
-}
 
+
+    void FireLaser()
+    {
+
+        //space key must spawn Laser
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+        {
+            _canFire = Time.time + _fireRate;
+            Instantiate(_laserPrefab, transform.position + 
+            new Vector3(0, 0.8f, 0),
+             Quaternion.identity);
+            Debug.Log("Space Key Pressed");
+        }
+    }
+    public void Damage()
+    {
+        _lives -= 1;
+        //_lives = _lives -1;
+        //_lives -= 1;
+
+        if (_lives < 1)
+        {
+            Destroy(this.gameObject);
+        }
+
+    }
+}
